@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CarCollide : MonoBehaviour {
 
-    public string text;
+    public string message;
+    public Text resultsText;
+    /*
     public bool guiOn;
     public Rect boxSize = new Rect(0, 0, 200, 100);
     public GUISkin customSkin;
+    */
 
     // Start is called before the first frame update
     void Start()
@@ -23,10 +27,12 @@ public class CarCollide : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Player")) {
-            guiOn = true;
+            resultsText.enabled = true;
+            resultsText.text = message;
         }
     }
 
+    /*
     void OnTriggerExit() {
         guiOn = false;
     }
@@ -39,8 +45,9 @@ public class CarCollide : MonoBehaviour {
         if (guiOn == true) {
             GUI.BeginGroup(new Rect(( Screen.width - boxSize.width ) / 2, ( Screen.height - boxSize.height ) / 2,
                 boxSize.width, boxSize.height));
-            GUI.Label(boxSize, text);
+            GUI.Label(boxSize, message);
             GUI.EndGroup();
         }
     }
+    */
 }
