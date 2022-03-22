@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Steering : MonoBehaviour
 {
@@ -19,21 +21,28 @@ public class Steering : MonoBehaviour
     public float accelerationForce;
     public float breakForce;
     public float maxSteerAngle;
+    public Text steerWarningText;
 
     private Transform target;
     private Vector3 fromVector;
     private bool hasSteered;
     private float angleBetween;
+    private Vector3 cross;
+    private float angle;
+    private float startingAngle;
+    private float vehicleSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        startingAngle = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        vehicleSpeed = GetComponentInParent<UpdateSpeed>().speed;
+
         if (target)
         {
             offset.position = target.position;
@@ -41,11 +50,12 @@ public class Steering : MonoBehaviour
             Vector3 dir = offset.position - transform.position;
             Quaternion rot = Quaternion.LookRotation(dir, transform.up);
             steeringWheel.rotation = rot;
-
+   
             if (hasSteered)
             {
                 angleBetween = Vector3.Angle(fromVector, dir);
-                Vector3 cross = Vector3.Cross(fromVector, dir);
+                cross = Vector3.Cross(fromVector, dir);
+                Debug.Log(cross.z);
                 if (cross.z > 0)
                 {
                     angleBetween = -angleBetween;
@@ -53,10 +63,14 @@ public class Steering : MonoBehaviour
                 fromVector = dir;
                 //Debug.Log(angleBetween);
 
-                float angle = wheelFL.steerAngle;
+                angle = wheelFL.steerAngle;
                 angle += angleBetween / 10;
-                Debug.Log(angle);
+                //Debug.Log(angle);
                 angle = Mathf.Clamp(angle, -maxSteerAngle, maxSteerAngle);
+                if(angle == maxSteerAngle || angle == -maxSteerAngle)
+                {
+                    steerWarningText.enabled = true;
+                }
                 wheelFL.steerAngle = angle;
                 wheelFR.steerAngle = angle;
                 AngleWheel(wheelFL, wheelFLTransform);
@@ -86,7 +100,7 @@ public class Steering : MonoBehaviour
             wheelBR.brakeTorque = 0;
         }
 
-        if (rightController.activateAction.action.ReadValue<float>() > 0.0f)
+        if (rightController.activateAction.action.ReadValue<float>() > 0.0f && vehicleSpeed <= GetComponentInParent<UpdateSpeed>().speedLimit)
         {
             Debug.Log("Accelerate");
             wheelBL.motorTorque = accelerationForce;
@@ -96,6 +110,23 @@ public class Steering : MonoBehaviour
         {
             wheelBL.motorTorque = 0;
             wheelBR.motorTorque = 0;
+        }
+
+        // when B button is pressed
+        if (rightController.uiPressAction.action.IsPressed())
+        {
+            cross.z = 0;
+            wheelFL.steerAngle = startingAngle;
+            wheelFR.steerAngle = startingAngle;
+            AngleWheel(wheelFL, wheelFLTransform);
+            AngleWheel(wheelFR, wheelFRTransform);
+            steerWarningText.enabled = false;
+        }
+
+        // when Y button is pressed
+        if (leftController.uiPressAction.action.IsPressed())
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
