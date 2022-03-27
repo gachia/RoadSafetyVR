@@ -26,7 +26,7 @@ public class CarCollide : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if (other.gameObject.CompareTag("Player")) {
+        if (other.gameObject.CompareTag("PlayerVehicle")) {
             resultsText.enabled = true;
             resultsText.text = message;
         }

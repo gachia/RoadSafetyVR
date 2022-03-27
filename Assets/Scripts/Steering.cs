@@ -27,6 +27,7 @@ public class Steering : MonoBehaviour
     private Vector3 fromVector;
     private bool hasSteered;
     private float angleBetween;
+    
     private Vector3 cross;
     private float angle;
     private float startingAngle;
@@ -55,8 +56,8 @@ public class Steering : MonoBehaviour
             {
                 angleBetween = Vector3.Angle(fromVector, dir);
                 cross = Vector3.Cross(fromVector, dir);
-                Debug.Log(cross.z);
-                if (cross.z > 0)
+                Debug.Log(cross.y);
+                if (cross.y < 0)
                 {
                     angleBetween = -angleBetween;
                 }
@@ -115,7 +116,7 @@ public class Steering : MonoBehaviour
         // when B button is pressed
         if (rightController.uiPressAction.action.IsPressed())
         {
-            cross.z = 0;
+            cross.y = 0;
             wheelFL.steerAngle = startingAngle;
             wheelFR.steerAngle = startingAngle;
             AngleWheel(wheelFL, wheelFLTransform);
