@@ -26,9 +26,10 @@ public class CarCollide : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if (other.gameObject.CompareTag("PlayerVehicle")) {
+        if (other.gameObject.CompareTag("PlayerVehicle") && !other.gameObject.GetComponent<LevelManager>().isLevelDone) {
             resultsText.enabled = true;
             resultsText.text = message;
+            other.gameObject.GetComponent<LevelManager>().isLevelDone = true;
         }
     }
 

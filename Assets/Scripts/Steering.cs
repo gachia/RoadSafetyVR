@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class Steering : MonoBehaviour
 {
@@ -21,14 +22,18 @@ public class Steering : MonoBehaviour
     public float accelerationForce;
     public float breakForce;
     public float maxSteerAngle;
+    
     public Text steerWarningText;
+
+    public AudioSource accelerateSound;
+    public AudioSource decelerateSound;
 
     private Transform target;
     private Vector3 fromVector;
     private bool hasSteered;
     private float angleBetween;
-    
     private Vector3 cross;
+
     private float angle;
     private float startingAngle;
     private float vehicleSpeed;
@@ -43,6 +48,11 @@ public class Steering : MonoBehaviour
     void Update()
     {
         vehicleSpeed = GetComponentInParent<UpdateSpeed>().speed;
+
+        if (vehicleSpeed <= 0.9f) {
+            accelerateSound.Stop();
+            decelerateSound.Stop();
+        }
 
         if (target)
         {
@@ -92,6 +102,14 @@ public class Steering : MonoBehaviour
             wheelFR.brakeTorque = breakForce;
             wheelBL.brakeTorque = breakForce;
             wheelBR.brakeTorque = breakForce;
+            if(vehicleSpeed > 0.9f)
+            {
+                if (!decelerateSound.isPlaying)
+                {
+                    accelerateSound.Stop();
+                    decelerateSound.Play();
+                }
+            }
         }
         else
         {
@@ -106,6 +124,14 @@ public class Steering : MonoBehaviour
             Debug.Log("Accelerate");
             wheelBL.motorTorque = accelerationForce;
             wheelBR.motorTorque = accelerationForce;
+            if(vehicleSpeed > 5.0f)
+            {
+                if (!accelerateSound.isPlaying)
+                {
+                    decelerateSound.Stop();
+                    accelerateSound.Play();
+                }
+            }
         }
         else
         {
