@@ -7,6 +7,7 @@ public class CarCollide : MonoBehaviour {
 
     public string message;
     public Text resultsText;
+    public bool isWinCon;
     /*
     public bool guiOn;
     public Rect boxSize = new Rect(0, 0, 200, 100);
@@ -29,7 +30,14 @@ public class CarCollide : MonoBehaviour {
         if (other.gameObject.CompareTag("PlayerVehicle") && !other.gameObject.GetComponent<LevelManager>().isLevelDone) {
             resultsText.enabled = true;
             resultsText.text = message;
-            other.gameObject.GetComponent<LevelManager>().isLevelDone = true;
+            if (isWinCon)
+            {
+                other.gameObject.GetComponent<LevelManager>().isLevelDone = true;
+            }
+            else
+            {
+                other.gameObject.GetComponent<LevelManager>().isLevelFail = true;
+            }
         }
     }
 

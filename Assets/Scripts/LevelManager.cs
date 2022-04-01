@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public bool isLevelDone { get; set; }
+    public bool isLevelFail { get; set; }
 
     // Start is called before the first frame update
     void Start()
