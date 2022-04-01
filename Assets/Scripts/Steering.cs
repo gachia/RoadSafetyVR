@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class Steering : MonoBehaviour
 {
@@ -21,13 +22,18 @@ public class Steering : MonoBehaviour
     public float accelerationForce;
     public float breakForce;
     public float maxSteerAngle;
+    
     public Text steerWarningText;
+
+    public AudioSource accelerateSound;
+    public AudioSource decelerateSound;
 
     private Transform target;
     private Vector3 fromVector;
     private bool hasSteered;
     private float angleBetween;
     private Vector3 cross;
+
     private float angle;
     private float startingAngle;
     private float vehicleSpeed;
@@ -43,6 +49,19 @@ public class Steering : MonoBehaviour
     {
         vehicleSpeed = GetComponentInParent<UpdateSpeed>().speed;
 
+        if (GetComponentInParent<LevelManager>().isLevelDone || GetComponentInParent<LevelManager>().isLevelFail)
+        {
+            wheelFL.brakeTorque = breakForce;
+            wheelFR.brakeTorque = breakForce;
+            wheelBL.brakeTorque = breakForce;
+            wheelBR.brakeTorque = breakForce;
+        }
+
+        if (vehicleSpeed <= 0.9f) {
+            accelerateSound.Stop();
+            decelerateSound.Stop();
+        }
+
         if (target)
         {
             offset.position = target.position;
@@ -55,8 +74,8 @@ public class Steering : MonoBehaviour
             {
                 angleBetween = Vector3.Angle(fromVector, dir);
                 cross = Vector3.Cross(fromVector, dir);
-                Debug.Log(cross.z);
-                if (cross.z > 0)
+                Debug.Log(cross.y);
+                if (cross.y < 0)
                 {
                     angleBetween = -angleBetween;
                 }
@@ -91,6 +110,14 @@ public class Steering : MonoBehaviour
             wheelFR.brakeTorque = breakForce;
             wheelBL.brakeTorque = breakForce;
             wheelBR.brakeTorque = breakForce;
+            if(vehicleSpeed > 0.9f)
+            {
+                if (!decelerateSound.isPlaying)
+                {
+                    accelerateSound.Stop();
+                    decelerateSound.Play();
+                }
+            }
         }
         else
         {
@@ -100,11 +127,20 @@ public class Steering : MonoBehaviour
             wheelBR.brakeTorque = 0;
         }
 
-        if (rightController.activateAction.action.ReadValue<float>() > 0.0f && vehicleSpeed <= GetComponentInParent<UpdateSpeed>().speedLimit)
+        if (rightController.activateAction.action.ReadValue<float>() > 0.0f && vehicleSpeed <= GetComponentInParent<UpdateSpeed>().speedLimit 
+            && !GetComponentInParent<LevelManager>().isLevelDone && !GetComponentInParent<LevelManager>().isLevelFail)
         {
             Debug.Log("Accelerate");
             wheelBL.motorTorque = accelerationForce;
             wheelBR.motorTorque = accelerationForce;
+            if(vehicleSpeed > 5.0f)
+            {
+                if (!accelerateSound.isPlaying)
+                {
+                    decelerateSound.Stop();
+                    accelerateSound.Play();
+                }
+            }
         }
         else
         {
@@ -115,7 +151,7 @@ public class Steering : MonoBehaviour
         // when B button is pressed
         if (rightController.uiPressAction.action.IsPressed())
         {
-            cross.z = 0;
+            cross.y = 0;
             wheelFL.steerAngle = startingAngle;
             wheelFR.steerAngle = startingAngle;
             AngleWheel(wheelFL, wheelFLTransform);
@@ -124,10 +160,17 @@ public class Steering : MonoBehaviour
         }
 
         // when Y button is pressed
-        if (leftController.uiPressAction.action.IsPressed())
+        if (leftController.uiPressAction.action.IsPressed() && !GetComponentInParent<LevelManager>().isLevelDone)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+
+        // when X button is pressed
+       if (leftController.selectAction.action.IsPressed())
+       {
+            SceneManager.LoadScene("MainMenu");
+       }
+        
     }
 
     private void OnTriggerEnter(Collider other)
