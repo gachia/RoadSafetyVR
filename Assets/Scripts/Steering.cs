@@ -49,6 +49,14 @@ public class Steering : MonoBehaviour
     {
         vehicleSpeed = GetComponentInParent<UpdateSpeed>().speed;
 
+        if (GetComponentInParent<LevelManager>().isLevelDone || GetComponentInParent<LevelManager>().isLevelFail)
+        {
+            wheelFL.brakeTorque = breakForce;
+            wheelFR.brakeTorque = breakForce;
+            wheelBL.brakeTorque = breakForce;
+            wheelBR.brakeTorque = breakForce;
+        }
+
         if (vehicleSpeed <= 0.9f) {
             accelerateSound.Stop();
             decelerateSound.Stop();
@@ -119,7 +127,8 @@ public class Steering : MonoBehaviour
             wheelBR.brakeTorque = 0;
         }
 
-        if (rightController.activateAction.action.ReadValue<float>() > 0.0f && vehicleSpeed <= GetComponentInParent<UpdateSpeed>().speedLimit)
+        if (rightController.activateAction.action.ReadValue<float>() > 0.0f && vehicleSpeed <= GetComponentInParent<UpdateSpeed>().speedLimit 
+            && !GetComponentInParent<LevelManager>().isLevelDone && !GetComponentInParent<LevelManager>().isLevelFail)
         {
             Debug.Log("Accelerate");
             wheelBL.motorTorque = accelerationForce;
@@ -151,10 +160,17 @@ public class Steering : MonoBehaviour
         }
 
         // when Y button is pressed
-        if (leftController.uiPressAction.action.IsPressed())
+        if (leftController.uiPressAction.action.IsPressed() && !GetComponentInParent<LevelManager>().isLevelDone)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+
+        // when X button is pressed
+       if (leftController.selectAction.action.IsPressed())
+       {
+            SceneManager.LoadScene("MainMenu");
+       }
+        
     }
 
     private void OnTriggerEnter(Collider other)
