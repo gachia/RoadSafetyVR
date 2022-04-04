@@ -26,6 +26,10 @@ public class UpdateSpeed : MonoBehaviour
         {
             speedometer.color = Color.red;
         }
+        else
+        {
+            speedometer.color = Color.white;
+        }
     }
 
 }

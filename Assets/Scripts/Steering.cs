@@ -83,7 +83,7 @@ public class Steering : MonoBehaviour
                 //Debug.Log(angleBetween);
 
                 angle = wheelFL.steerAngle;
-                angle += angleBetween / 10;
+                angle += angleBetween / 20;
                 //Debug.Log(angle);
                 angle = Mathf.Clamp(angle, -maxSteerAngle, maxSteerAngle);
                 if(angle == maxSteerAngle || angle == -maxSteerAngle)
