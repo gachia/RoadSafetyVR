@@ -168,7 +168,7 @@ public class Steering : MonoBehaviour
         // when X button is pressed
        if (leftController.selectAction.action.IsPressed())
        {
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene("Main Menu");
        }
         
     }
