@@ -83,7 +83,7 @@ public class Steering : MonoBehaviour
                 //Debug.Log(angleBetween);
 
                 angle = wheelFL.steerAngle;
-                angle += angleBetween / 10;
+                angle += angleBetween / 20;
                 //Debug.Log(angle);
                 angle = Mathf.Clamp(angle, -maxSteerAngle, maxSteerAngle);
                 if(angle == maxSteerAngle || angle == -maxSteerAngle)
@@ -168,7 +168,7 @@ public class Steering : MonoBehaviour
         // when X button is pressed
        if (leftController.selectAction.action.IsPressed())
        {
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene("Main Menu");
        }
         
     }
