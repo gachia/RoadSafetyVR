@@ -17,10 +17,12 @@ public class InstructionManager : MonoBehaviour
         switch (level)
         {
             case 1:
-                instructMessage = "Objective: Perform a right hand turn on the\n2nd turning lane at the junction ahead.\nEnsure that you turn into the correct lane - 2nd lane to 2nd lane.";
+                instructMessage = "Objective: Perform a right hand turn on the 2nd turning lane at the junction ahead.\n" +
+                    "Ensure that you turn into the middle lane on the next street\nInfo: 2nd turning lane is the 2nd lane from the right.";
                 break;
             case 2:
-                instructMessage = "Objective: Avoid the bus lane and keep to left-most lane after.\nLook out for the road markings.";
+                instructMessage = "Objective: Avoid the bus lane as you enter the main street and\n" +
+                    "return to left-most lane when it is okay to.\nTip: Take note of the bus lane markings.";
                 break;
             default:
                 instructMessage = "";

@@ -49,6 +49,7 @@ public class Steering : MonoBehaviour
     {
         vehicleSpeed = GetComponentInParent<UpdateSpeed>().speed;
 
+        // When level is passed or failed, slow the vehicle down
         if (GetComponentInParent<LevelManager>().isLevelDone || GetComponentInParent<LevelManager>().isLevelFail)
         {
             wheelFL.brakeTorque = breakForce;
@@ -62,6 +63,7 @@ public class Steering : MonoBehaviour
             decelerateSound.Stop();
         }
 
+        // Calculates steering when hand touches the steering wheel to turn 
         if (target)
         {
             offset.position = target.position;
@@ -103,6 +105,7 @@ public class Steering : MonoBehaviour
             }
         }
 
+        // Braking
         if (leftController.activateAction.action.ReadValue<float>() > 0.0f)
         {
             Debug.Log("Brake");
@@ -127,6 +130,7 @@ public class Steering : MonoBehaviour
             wheelBR.brakeTorque = 0;
         }
 
+        // Acceleration
         if (rightController.activateAction.action.ReadValue<float>() > 0.0f && vehicleSpeed <= GetComponentInParent<UpdateSpeed>().speedLimit 
             && !GetComponentInParent<LevelManager>().isLevelDone && !GetComponentInParent<LevelManager>().isLevelFail)
         {

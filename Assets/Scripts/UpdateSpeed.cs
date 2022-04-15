@@ -19,6 +19,7 @@ public class UpdateSpeed : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        // Converts speed unit to km/h
         speed = GetComponent<Rigidbody>().velocity.magnitude * 3.6f;
         speedometer.text = (int)speed + " km/h";
 
